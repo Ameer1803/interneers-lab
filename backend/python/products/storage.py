@@ -1,0 +1,2 @@
+PRODUCTS = {}
+NEXT_ID = 1
