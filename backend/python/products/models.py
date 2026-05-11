@@ -1,13 +1,24 @@
-from django.db import models
+from mongoengine import (
+    Document,
+    StringField,
+    DecimalField,
+    IntField,
+    ReferenceField
+)
 
-class Product(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    category = models.CharField(max_length=100)
-    brand = models.CharField(max_length=100)
+    
+class ProductCategory(Document):
+    title = StringField(required=True)
+    description = StringField()
 
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
+class Product(Document):
+    name = StringField(max_length=100, required=True)
+    description = StringField()
+    category = ReferenceField(ProductCategory)
+    brand = StringField(max_length=100)
+
+    price = DecimalField(precision=2)
+    quantity = IntField(min_value=0)
 
     def __str__(self):
         return self.name
