@@ -1,6 +1,6 @@
 from products.repositories.product_repository import ProductRepository
 
-class CategoryServer:
+class CategoryService:
     @staticmethod
     def create_product(data):
         return ProductRepository.create( data)

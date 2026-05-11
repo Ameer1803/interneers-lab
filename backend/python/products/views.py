@@ -1,7 +1,11 @@
+import csv
 import json
+
+from io import TextIOWrapper
 
 from django.http import JsonResponse
 from products.services.product_services import ProductService
+from products.services.category_services import CategoryService
 from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
@@ -169,16 +173,10 @@ def add_category(request):
         )
 
     try:
-        body = json.loads(
-            request.body.decode("utf-8")
-        )
+        body = json.loads(request.body.decode("utf-8"))
 
     except Exception:
-
-        return JsonResponse(
-            {"error": "Invalid JSON body"},
-            status=400
-        )
+        return JsonResponse({"error": "Invalid JSON body"}, status=400)
 
     required_fields = [
         "title",
@@ -186,9 +184,7 @@ def add_category(request):
     ]
 
     for field in required_fields:
-
         if field not in body:
-
             return JsonResponse(
                 {
                     "error":
@@ -197,24 +193,15 @@ def add_category(request):
                 status=400
             )
 
-    category = (
-        CategoryService.create_category(
-            body
-        )
-    )
+    category = (CategoryService.create_category(body))
 
     return JsonResponse(
         {
             "message": "Category created",
-
             "category": {
                 "id": str(category.id),
-
-                "title":
-                category.title,
-
-                "description":
-                category.description,
+                "title": category.title,
+                "description": category.description,
             }
         },
         status=201,
@@ -222,31 +209,21 @@ def add_category(request):
 
 
 def list_category(request):
-
     if request.method != "GET":
         return JsonResponse(
             {"error": "Only GET allowed"},
             status=405
         )
 
-    categories = (
-        CategoryService.get_all_categories()
-    )
+    categories = (CategoryService.get_all_categories())
 
     serialized_categories = []
 
     for category in categories:
-
         serialized_categories.append({
-
-            "id":
-            str(category.id),
-
-            "title":
-            category.title,
-
-            "description":
-            category.description,
+            "id":str(category.id),
+            "title":category.title,
+            "description":category.description,
         })
 
     return JsonResponse(
@@ -259,21 +236,14 @@ def list_category(request):
 
 
 def get_category(request, category_id):
-
     if request.method != "GET":
         return JsonResponse(
             {"error": "Only GET allowed"},
             status=405
         )
-
-    category = (
-        ProductCategoryService.get_category(
-            category_id
-        )
-    )
+    category = (CategoryService.get_category(category_id))
 
     if not category:
-
         return JsonResponse(
             {"error": "Category not found"},
             status=404
@@ -282,14 +252,9 @@ def get_category(request, category_id):
     return JsonResponse(
         {
             "category": {
-                "id":
-                str(category.id),
-
-                "title":
-                category.title,
-
-                "description":
-                category.description,
+                "id": str(category.id),
+                "title": category.title,
+                "description": category.description,
             }
         },
         status=200,
@@ -306,26 +271,17 @@ def update_category(request, category_id):
         )
 
     try:
-        body = json.loads(
-            request.body.decode("utf-8")
-        )
+        body = json.loads(request.body.decode("utf-8"))
 
     except Exception:
-
         return JsonResponse(
             {"error": "Invalid JSON body"},
             status=400
         )
 
-    category = (
-        ProductCategoryService.update_category(
-            category_id,
-            body
-        )
-    )
+    category = (CategoryService.update_category(category_id,body))
 
     if not category:
-
         return JsonResponse(
             {"error": "Category not found"},
             status=404
@@ -334,14 +290,9 @@ def update_category(request, category_id):
     return JsonResponse(
         {
             "category": {
-                "id":
-                str(category.id),
-
-                "title":
-                category.title,
-
-                "description":
-                category.description,
+                "id": str(category.id),
+                "title": category.title,
+                "description": category.description,
             }
         },
         status=200,
@@ -350,21 +301,14 @@ def update_category(request, category_id):
 
 @csrf_exempt
 def delete_category(request, category_id):
-
     if request.method != "DELETE":
         return JsonResponse(
             {"error": "Only DELETE allowed"},
             status=405
         )
-
-    deleted = (
-        ProductCategoryService.delete_category(
-            category_id
-        )
-    )
+    deleted = (CategoryService.delete_category(category_id))
 
     if not deleted:
-
         return JsonResponse(
             {"error": "Category not found"},
             status=404
@@ -379,10 +323,6 @@ def delete_category(request, category_id):
     )
 
 
-# =========================================================
-# CATEGORY PRODUCT APIs
-# =========================================================
-
 def get_category_products(request, category_id):
 
     if request.method != "GET":
@@ -391,64 +331,31 @@ def get_category_products(request, category_id):
             status=405
         )
 
-    category = (
-        ProductCategoryService.get_category(
-            category_id
-        )
-    )
+    category = (CategoryService.get_category(category_id))
 
-    if not category:
-
-        return JsonResponse(
-            {"error": "Category not found"},
-            status=404
-        )
-
-    products = (
-        ProductService.get_products_by_category(
-            category
-        )
-    )
+    products = (ProductService.get_products_by_category(category))
 
     serialized_products = []
 
     for product in products:
-
         serialized_products.append({
-
-            "id":
-            str(product.id),
-
-            "name":
-            product.name,
-
-            "description":
-            product.description,
-
-            "price":
-            float(product.price),
-
-            "brand":
-            product.brand,
-
-            "quantity":
-            product.quantity,
+            "id": str(product.id),
+            "name": product.name,
+            "description": product.description,
+            "price": float(product.price),
+            "brand": product.brand,
+            "quantity":product.quantity,
         })
 
     return JsonResponse(
         {
             "category": category.title,
-
             "products":
             serialized_products,
         },
         status=200,
     )
 
-
-# =========================================================
-# BULK CSV UPLOAD
-# =========================================================
 
 @csrf_exempt
 def bulk_upload_products(request):
@@ -478,12 +385,7 @@ def bulk_upload_products(request):
     created_products = []
 
     for row in reader:
-
-        category = (
-            ProductCategoryService.get_category(
-                row["category_id"]
-            )
-        )
+        category = (CategoryService.get_category(row["category_id"]))
 
         if not category:
             continue
@@ -503,7 +405,6 @@ def bulk_upload_products(request):
         {
             "message":
             "Bulk upload completed",
-
             "created_products":
             created_products,
         },
