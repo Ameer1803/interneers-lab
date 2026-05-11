@@ -12,3 +12,5 @@ class ProductsConfig(AppConfig):
     def ready(self):
 
         import products.db  
+        from products.seeds import seed_categories
+        seed_categories()
