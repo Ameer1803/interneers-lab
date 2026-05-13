@@ -4,3 +4,6 @@ mongoengine
 streamlit
 requests
 pandas
+openai
+pydantic
+python-dotenv
