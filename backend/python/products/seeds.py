@@ -1,4 +1,4 @@
-from products.models import ProductCategory
+from products.models import Category
 
 
 DEFAULT_CATEGORIES = [
@@ -30,14 +30,14 @@ def seed_categories():
     for category_data in DEFAULT_CATEGORIES:
 
         existing_category = (
-            ProductCategory.objects(
+            Category.objects(
                 title=category_data["title"]
             ).first()
         )
 
         if not existing_category:
 
-            ProductCategory(
+            Category(
                 **category_data
             ).save()
 

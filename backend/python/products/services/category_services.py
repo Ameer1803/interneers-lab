@@ -1,18 +1,18 @@
-from products.repositories.product_repository import ProductRepository
+from products.repositories.category_repository import CategoryRepository
 
 class CategoryService:
     @staticmethod
-    def create_product(data):
-        return ProductRepository.create( data)
+    def create_category(data):
+        return CategoryRepository.create( data)
 
     @staticmethod
-    def get_product(prod_id):
-        return ProductRepository.get_by_id(prod_id)
+    def get_category(prod_id):
+        return CategoryRepository.get_by_id(prod_id)
 
     @staticmethod
-    def get_all_products():
-        return ProductRepository.get_all()
+    def get_all_categories():
+        return CategoryRepository.get_all()
 
     @staticmethod
-    def delete_product(prod_id):
-        return ProductRepository.delete(prod_id)
+    def delete_category(prod_id):
+        return CategoryRepository.delete(prod_id)

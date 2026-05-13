@@ -7,14 +7,14 @@ from mongoengine import (
 )
 
     
-class ProductCategory(Document):
+class Category(Document):
     title = StringField(required=True)
     description = StringField()
 
 class Product(Document):
     name = StringField(max_length=100, required=True)
     description = StringField()
-    category = ReferenceField(ProductCategory)
+    category = ReferenceField(Category)
     brand = StringField(max_length=100)
 
     price = DecimalField(precision=2)
